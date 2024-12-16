@@ -1,4 +1,3 @@
-// app/artists/page.tsx
 import { prisma } from "../../lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
@@ -60,7 +59,12 @@ export default async function ArtistsPage() {
 							<Link key={artist.id} href={`/artist/${artist.id}`} className="group">
 								<article className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
 									<div className="relative h-48">
-										<Image src={artist.imageUrl} alt={artist.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+										<Image
+											src={`https://imagedelivery.net/CJyrB-EkqcsF2D6ApJzEBg/${artist.imageUrl}/public`}
+											alt={artist.name}
+											fill
+											className="object-cover group-hover:scale-105 transition-transform duration-300"
+										/>
 									</div>
 
 									<div className="p-4">

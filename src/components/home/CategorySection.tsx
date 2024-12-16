@@ -1,4 +1,3 @@
-// components/home/CategorySection.tsx
 import Link from "next/link";
 
 type Genre = {

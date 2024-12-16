@@ -1,4 +1,3 @@
-// app/genre/[slug]/page.tsx
 import { prisma } from "../../../lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
@@ -12,7 +11,7 @@ async function getGenreData(slug: string) {
 			artists: {
 				include: {
 					songs: {
-						take: 1, // 대표곡 하나만 가져오기
+						take: 1,
 					},
 				},
 			},
@@ -26,8 +25,11 @@ async function getGenreData(slug: string) {
 	return genre;
 }
 
-export default async function GenrePage({ params }: { params: { slug: string } }) {
-	const genre = await getGenreData(params.slug);
+type Params = Promise<{ slug: string }>;
+
+export default async function GenrePage({ params }: { params: Params }) {
+	const { slug } = await params;
+	const genre = await getGenreData(slug);
 
 	return (
 		<main>
@@ -57,7 +59,12 @@ export default async function GenrePage({ params }: { params: { slug: string } }
 							<Link key={artist.id} href={`/artist/${artist.id}`} className="group">
 								<article className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
 									<div className="relative h-48">
-										<Image src={artist.imageUrl} alt={artist.name} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
+										<Image
+											src={`https://imagedelivery.net/CJyrB-EkqcsF2D6ApJzEBg/${artist.imageUrl}/public`}
+											alt={artist.name}
+											fill
+											className="object-cover group-hover:scale-105 transition-transform duration-300"
+										/>
 									</div>
 
 									<div className="p-6">
@@ -95,9 +102,9 @@ export default async function GenrePage({ params }: { params: { slug: string } }
 	);
 }
 
-// 동적 메타데이터 생성
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-	const genre = await getGenreData(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+	const { slug } = await params;
+	const genre = await getGenreData(slug);
 
 	return {
 		title: `${genre.name} 아티스트 - Band Story`,

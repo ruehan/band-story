@@ -1,4 +1,3 @@
-// app/page.tsx
 import HeroBanner from "@/components/home/HeroBanner";
 import CategorySection from "@/components/home/CategorySection";
 import ArtistSpotlight from "@/components/home/ArtistSpotlight";

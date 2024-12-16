@@ -1,7 +1,5 @@
-// components/home/ArtistSpotlight.tsx
 import Image from "next/image";
 import Link from "next/link";
-import { PlayCircleIcon } from "@heroicons/react/24/solid";
 import PlayButton from "../PlayButton";
 
 type Artist = {
