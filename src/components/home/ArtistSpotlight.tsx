@@ -2,6 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { PlayCircleIcon } from "@heroicons/react/24/solid";
+import PlayButton from "../PlayButton";
 
 type Artist = {
 	id: string;
@@ -40,7 +41,7 @@ export default function ArtistSpotlight({ artists }: Props) {
 					{artists.map((artist) => (
 						<article key={artist.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
 							<div className="relative h-48">
-								<Image src={artist.imageUrl} alt={artist.name} fill className="object-cover" />
+								<Image src={`https://imagedelivery.net/CJyrB-EkqcsF2D6ApJzEBg/${artist.imageUrl}/public`} alt={artist.name} fill className="object-cover" />
 							</div>
 
 							<div className="p-6">
@@ -60,8 +61,7 @@ export default function ArtistSpotlight({ artists }: Props) {
 										{artist.songs.map((song) => (
 											<li key={song.id} className="flex items-center justify-between text-sm hover:bg-gray-50 p-2 rounded">
 												<div className="flex items-center">
-													<PlayCircleIcon className="w-5 h-5 text-accent mr-2 cursor-pointer" />
-													<span>{song.title}</span>
+													<PlayButton videoId={song.videoId} title={song.title} artist={artist.name} />
 												</div>
 												<span className="text-gray-500">{song.duration}</span>
 											</li>
