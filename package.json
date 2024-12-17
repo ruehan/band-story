@@ -6,8 +6,9 @@
 	"scripts": {
 		"dev": "next -p 3002",
 		"build": "next build --no-lint",
-		"start": "next start --port 3002",
-		"lint": "next lint"
+		"start": "next start",
+		"lint": "next lint",
+		"vercel-build": "prisma generate && prisma migrate deploy && next build"
 	},
 	"prisma": {
 		"seed": "node --loader ts-node/esm prisma/seed.ts"
