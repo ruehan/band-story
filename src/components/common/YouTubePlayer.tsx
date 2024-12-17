@@ -3,7 +3,7 @@
 import YouTube, { YouTubePlayer as YT } from "react-youtube";
 import { XMarkIcon, ForwardIcon, BackwardIcon, PlayIcon, PauseIcon, SpeakerWaveIcon, MinusIcon } from "@heroicons/react/24/solid";
 import { useYouTube } from "@/contexts/YouTubeContext";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 interface YouTubePlayerProps {
 	videoId: string;
@@ -13,12 +13,20 @@ interface YouTubePlayerProps {
 	onEnded: () => void;
 }
 
+const PLAYER_POSITION_KEY = "youtube-player-position";
+
 export default function YouTubePlayer({ videoId, title, artist, onClose, onEnded }: YouTubePlayerProps) {
 	const { playNext, playPrevious, playlist, currentSong, setCurrentSong, removeFromPlaylist } = useYouTube();
-	const [position, setPosition] = useState({ x: 0, y: 0 });
+	const [position, setPosition] = useState(() => {
+		if (typeof window !== "undefined") {
+			const savedPosition = localStorage.getItem(PLAYER_POSITION_KEY);
+			return savedPosition ? JSON.parse(savedPosition) : { x: 0, y: 0 };
+		}
+		return { x: 0, y: 0 };
+	});
 	const [isDragging, setIsDragging] = useState(false);
 	const [isPlaying, setIsPlaying] = useState(false);
-	const [volume, setVolume] = useState(50);
+	const [volume, setVolume] = useState(10);
 	const dragRef = useRef<HTMLDivElement>(null);
 	const initialPosition = useRef({ x: 0, y: 0 });
 	const dragStart = useRef({ x: 0, y: 0 });
@@ -40,33 +48,39 @@ export default function YouTubePlayer({ videoId, title, artist, onClose, onEnded
 		dragStart.current = { x: e.clientX, y: e.clientY };
 	};
 
-	useEffect(() => {
-		const handleMouseMove = (e: MouseEvent) => {
+	const handleMouseMove = useCallback(
+		(e: MouseEvent) => {
 			if (!isDragging) return;
 
 			const dx = e.clientX - dragStart.current.x;
 			const dy = e.clientY - dragStart.current.y;
 
+			const newX = Math.min(Math.max(initialPosition.current.x + dx, -window.innerWidth / 2 + 100), window.innerWidth / 2 - 100);
+			const newY = Math.min(Math.max(initialPosition.current.y + dy, 0), window.innerHeight - 100);
+
 			setPosition({
-				x: initialPosition.current.x + dx,
-				y: initialPosition.current.y + dy,
+				x: newX,
+				y: newY,
 			});
-		};
+		},
+		[isDragging]
+	);
 
-		const handleMouseUp = () => {
-			setIsDragging(false);
-		};
-
+	useEffect(() => {
 		if (isDragging) {
 			document.addEventListener("mousemove", handleMouseMove);
-			document.addEventListener("mouseup", handleMouseUp);
+			document.addEventListener("mouseup", () => setIsDragging(false));
 		}
 
 		return () => {
 			document.removeEventListener("mousemove", handleMouseMove);
-			document.removeEventListener("mouseup", handleMouseUp);
+			document.removeEventListener("mouseup", () => setIsDragging(false));
 		};
-	}, [isDragging]);
+	}, [isDragging, handleMouseMove]);
+
+	useEffect(() => {
+		localStorage.setItem(PLAYER_POSITION_KEY, JSON.stringify(position));
+	}, [position]);
 
 	const formatTime = (seconds: number) => {
 		const minutes = Math.floor(seconds / 60);
@@ -144,22 +158,46 @@ export default function YouTubePlayer({ videoId, title, artist, onClose, onEnded
 		},
 	};
 
+	useEffect(() => {
+		if (!isMinimized && currentSongRef.current) {
+			setTimeout(() => {
+				currentSongRef.current?.scrollIntoView({
+					behavior: "smooth",
+					block: "center",
+				});
+			}, 300);
+		}
+	}, [isMinimized]);
+
 	return (
 		<div
 			ref={dragRef}
-			className={`fixed shadow-lg rounded-lg overflow-hidden bg-gray-900 z-50 ${isDragging ? "" : "transition-all duration-300"} ${isMinimized ? "w-64" : "w-80"}`}
+			className={`fixed shadow-lg rounded-lg overflow-hidden bg-gray-900 z-50 ${isDragging ? "select-none" : "transition-all duration-300"} ${isMinimized ? "w-64" : "w-80"}`}
 			style={{
 				transform: `translate(${position.x}px, ${position.y}px)`,
 				top: "1rem",
 				right: "1rem",
 				height: isMinimized ? "48px" : "auto",
 				maxHeight: "calc(100vh - 2rem)",
+				pointerEvents: "auto",
 			}}
 		>
-			<div className="flex justify-between items-center bg-gray-800 p-3" onMouseDown={handleMouseDown} style={{ cursor: isDragging ? "grabbing" : "grab" }}>
+			<div
+				className={`flex justify-between items-center bg-gray-800 p-3 ${isMinimized ? "border-b-0" : "border-b border-gray-700"}`}
+				onMouseDown={(e) => {
+					e.preventDefault();
+					handleMouseDown(e);
+				}}
+				style={{
+					cursor: isDragging ? "grabbing" : "grab",
+					userSelect: "none",
+				}}
+			>
 				<div className="text-white flex-1 min-w-0 mr-2">
-					<h3 className="text-sm font-medium truncate">{title}</h3>
-					{!isMinimized && <p className="text-xs text-gray-400 truncate">{artist}</p>}
+					<div className="flex flex-col">
+						<h3 className="text-sm font-medium truncate">{title}</h3>
+						<p className="text-xs text-gray-400 truncate">{artist}</p>
+					</div>
 				</div>
 				<div className="flex items-center gap-2">
 					{!isMinimized && (
@@ -180,7 +218,7 @@ export default function YouTubePlayer({ videoId, title, artist, onClose, onEnded
 						</>
 					)}
 					<button onClick={() => setIsMinimized(!isMinimized)} className="text-white hover:text-gray-300 p-1" title={isMinimized ? "최대화" : "최소화"}>
-						<MinusIcon className="h-5 w-5" />
+						<MinusIcon className={`h-5 w-5 transform transition-transform duration-300 ${isMinimized ? "rotate-180" : ""}`} />
 					</button>
 					{!isMinimized && (
 						<button onClick={onClose} className="text-white hover:text-gray-300 p-1" title="닫기">
