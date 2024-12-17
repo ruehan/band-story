@@ -55,8 +55,8 @@ export default function YouTubePlayer({ videoId, title, artist, onClose, onEnded
 			const dx = e.clientX - dragStart.current.x;
 			const dy = e.clientY - dragStart.current.y;
 
-			const newX = Math.min(Math.max(initialPosition.current.x + dx, -window.innerWidth / 2 + 100), window.innerWidth / 2 - 100);
-			const newY = Math.min(Math.max(initialPosition.current.y + dy, 0), window.innerHeight - 100);
+			const newX = initialPosition.current.x + dx;
+			const newY = initialPosition.current.y + dy;
 
 			setPosition({
 				x: newX,
