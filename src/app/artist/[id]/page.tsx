@@ -3,6 +3,8 @@ import Image from "next/image";
 import React from "react";
 import { prisma } from "../../../lib/prisma";
 import PlayButton from "@/components/PlayButton";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import ArtistSongList from "@/components/home/ArtistSongList";
 
 async function getArtist(id: string) {
 	const artist = await prisma.artist.findUnique({
@@ -16,6 +18,7 @@ async function getArtist(id: string) {
 					duration: true,
 					videoId: true,
 					description: true,
+					recommended: true,
 				},
 			},
 			members: true,
@@ -31,12 +34,13 @@ type Params = Promise<{ id: string }>;
 export default async function ArtistPage({ params }: { params: Params }) {
 	const { id } = await params;
 	const artist = await getArtist(id);
+
 	return (
 		<main>
 			{/* 헤더 섹션 */}
 			<section className="relative h-[400px]">
 				<div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70">
-					<Image src={`https://imagedelivery.net/CJyrB-EkqcsF2D6ApJzEBg/${artist.imageUrl}/public`} alt={artist.name} fill className="object-cover -z-10" />
+					<Image src={`https://imagedelivery.net/CJyrB-EkqcsF2D6ApJzEBg/${artist.imageUrl}/public`} alt={artist.name} fill className="object-contain -z-10" />
 				</div>
 				<div className="container mx-auto px-4 h-full flex items-end pb-12">
 					<div className="text-white">
@@ -75,23 +79,7 @@ export default async function ArtistPage({ params }: { params: Params }) {
 							</div>
 
 							<h2 className="text-2xl font-bold mb-4">음악</h2>
-							<div className="bg-gray-50 rounded-lg p-4 space-y-4">
-								{artist.songs.map((song) => (
-									<div key={song.id} className="bg-white rounded-lg p-4 hover:shadow-md transition-all">
-										<div className="flex items-center justify-between mb-2">
-											<div className="flex items-center gap-3">
-												<PlayButton videoId={song.videoId} title={song.title} artist={artist.name} />
-											</div>
-											<span className="text-gray-500">{song.duration}</span>
-										</div>
-										{song.description && (
-											<div className="mt-2 pl-10">
-												<p className="text-sm text-gray-600">{song.description}</p>
-											</div>
-										)}
-									</div>
-								))}
-							</div>
+							<ArtistSongList songs={artist.songs} artistName={artist.name} />
 						</div>
 
 						{/* 오른쪽: 사이드바 정보 */}

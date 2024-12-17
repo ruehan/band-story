@@ -21,7 +21,7 @@ export default function SongList({ songs, artistName }: Props) {
 
 	return (
 		<ul className="space-y-2">
-			{songs.map((song) => (
+			{songs.slice(0, 3).map((song) => (
 				<li key={song.id} className="flex items-center justify-between text-sm hover:bg-gray-50 p-2 rounded">
 					<PlayButton videoId={song.videoId} title={song.title} artist={artistName} />
 					<div className="flex items-center gap-2">
