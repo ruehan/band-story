@@ -1,6 +1,6 @@
 "use client";
 
-import { PlayCircleIcon } from "@heroicons/react/24/solid";
+import { PlayCircleIcon, PlusCircleIcon } from "@heroicons/react/24/solid";
 import { useYouTube } from "@/contexts/YouTubeContext";
 
 interface PlayButtonProps {
@@ -10,14 +10,21 @@ interface PlayButtonProps {
 }
 
 export default function PlayButton({ videoId, title, artist }: PlayButtonProps) {
-	const { setCurrentSong } = useYouTube();
+	const { setCurrentSong, addToPlaylist } = useYouTube();
 
 	if (!videoId) return null;
 
+	const song = { videoId, title, artist };
+
 	return (
-		<button onClick={() => setCurrentSong({ videoId, title, artist })} className="flex items-center gap-2 hover:text-accent transition-colors" title={`Play ${title}`}>
-			<PlayCircleIcon className="w-8 h-8" />
+		<div className="flex items-center gap-2">
+			<button onClick={() => setCurrentSong(song)} className="hover:text-accent transition-colors" title={`Play ${title}`}>
+				<PlayCircleIcon className="w-8 h-8" />
+			</button>
 			<span>{title}</span>
-		</button>
+			<button onClick={() => addToPlaylist(song)} className="hover:text-accent transition-colors ml-2" title="Add to playlist">
+				<PlusCircleIcon className="w-6 h-6" />
+			</button>
+		</div>
 	);
 }
