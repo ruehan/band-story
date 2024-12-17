@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import PlayButton from "../PlayButton";
+import SongList from "./SongList";
 
 type Artist = {
 	id: string;
@@ -55,16 +55,7 @@ export default function ArtistSpotlight({ artists }: Props) {
 
 								<div className="border-t pt-4">
 									<h4 className="font-medium mb-2">대표곡</h4>
-									<ul className="space-y-2">
-										{artist.songs.map((song) => (
-											<li key={song.id} className="flex items-center justify-between text-sm hover:bg-gray-50 p-2 rounded">
-												<div className="flex items-center">
-													<PlayButton videoId={song.videoId} title={song.title} artist={artist.name} />
-												</div>
-												<span className="text-gray-500">{song.duration}</span>
-											</li>
-										))}
-									</ul>
+									<SongList songs={artist.songs} artistName={artist.name} />
 								</div>
 
 								<Link href={`/artist/${artist.id}`} className="block text-center mt-4 text-accent hover:text-accent/80 font-medium">

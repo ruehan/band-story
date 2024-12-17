@@ -22,9 +22,6 @@ export default function PlayButton({ videoId, title, artist }: PlayButtonProps) 
 				<PlayCircleIcon className="w-8 h-8" />
 			</button>
 			<span>{title}</span>
-			<button onClick={() => addToPlaylist(song)} className="hover:text-accent transition-colors ml-2" title="Add to playlist">
-				<PlusCircleIcon className="w-6 h-6" />
-			</button>
 		</div>
 	);
 }
