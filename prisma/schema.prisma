@@ -26,6 +26,16 @@ model Artist {
   genre       Genre    @relation(fields: [genreId], references: [id])
   genreId     String
   songs       Song[]
+  members     Member[]
+}
+
+model Member {
+  id       String  @id @default(cuid())
+  name     String
+  role     String
+  imageUrl String?
+  artistId String
+  artist   Artist  @relation(fields: [artistId], references: [id])
 }
 
 model Genre {
@@ -42,8 +52,10 @@ model Song {
   title       String
   duration    String
   videoId     String?
+  description String?
   artist      Artist   @relation(fields: [artistId], references: [id])
   artistId    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  recommended Boolean  @default(false)
 }
