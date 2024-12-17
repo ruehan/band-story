@@ -2,7 +2,6 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import YouTubePlayer from "@/components/common/YouTubePlayer";
-import Playlist from "@/components/common/PlayList";
 
 interface Song {
 	videoId: string;
@@ -120,7 +119,6 @@ export function YouTubeProvider({ children }: { children: React.ReactNode }) {
 			{currentSong && (
 				<>
 					<YouTubePlayer videoId={currentSong.videoId} title={currentSong.title} artist={currentSong.artist} onClose={() => setCurrentSong(null)} onEnded={playNext} />
-					<Playlist />
 				</>
 			)}
 		</YouTubeContext.Provider>
