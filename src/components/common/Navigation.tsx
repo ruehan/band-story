@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HomeIcon, MusicalNoteIcon, UserGroupIcon } from "@heroicons/react/24/outline";
+import { HomeIcon, InformationCircleIcon, MusicalNoteIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 
 export default function Navigation() {
 	return (
@@ -22,6 +22,10 @@ export default function Navigation() {
 								<MusicalNoteIcon className="h-5 w-5 mr-1" />
 								장르
 							</Link>
+							<Link href="/about" className="flex items-center px-3 py-2 rounded-md text-gray-700 hover:text-primary hover:bg-gray-50">
+								<InformationCircleIcon className="h-5 w-5 mr-1" />
+								소개
+							</Link>
 						</div>
 					</div>
 
@@ -32,6 +36,9 @@ export default function Navigation() {
 						</Link>
 						<Link href="/genres" className="p-2 text-gray-700 hover:text-primary">
 							<MusicalNoteIcon className="h-6 w-6" />
+						</Link>
+						<Link href="/about" className="p-2 text-gray-700 hover:text-primary">
+							<InformationCircleIcon className="h-6 w-6" />
 						</Link>
 					</div>
 				</div>
