@@ -1,86 +1,47 @@
 import { prisma } from "../../lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import ArtistList from "./ArtistList";
 
-async function getArtists() {
+// searchParams를 통해 정렬 기준을 받아옴
+async function getArtists(sortBy: string = "name") {
 	const artists = await prisma.artist.findMany({
 		include: {
 			genre: true,
 			songs: {
-				take: 1, // 대표곡 하나만 가져오기
+				take: 1,
 			},
 		},
-		orderBy: {
-			name: "asc", // 이름순 정렬
-		},
+		...(sortBy === "debut" ? { orderBy: { debutYear: "asc" } } : {}),
 	});
+
+	if (sortBy === "name") {
+		artists.sort((a, b) => {
+			const nameA = a.name.split("(")[0].trim();
+			const nameB = b.name.split("(")[0].trim();
+			return new Intl.Collator("ko", { sensitivity: "base" }).compare(nameA, nameB);
+		});
+	}
 
 	return artists;
 }
 
-export default async function ArtistsPage() {
-	const artists = await getArtists();
+export default async function ArtistsPage({ searchParams }: { searchParams: { sort: string } }) {
+	const sortBy = searchParams.sort || "name";
+	const artists = await getArtists(sortBy);
 
 	return (
 		<main>
-			{/* 헤더 섹션 */}
 			<section className="bg-gradient-to-r from-primary to-secondary py-16">
 				<div className="container mx-auto px-4">
 					<h1 className="text-4xl font-bold text-white mb-4">아티스트</h1>
-					<p className="text-gray-200">다양한 장르의 아티스트들을 만나보세요</p>
+					<p className="text-gray-200">다양한 아티스트들의 음악을 탐색해보세요</p>
 				</div>
 			</section>
 
-			{/* 아티스트 목록 섹션 */}
 			<section className="py-16">
 				<div className="container mx-auto px-4">
-					{/* 필터 및 정렬 옵션 */}
-					<div className="mb-8 flex justify-between items-center">
-						<div className="flex gap-4">
-							<select className="px-4 py-2 border rounded-lg">
-								<option value="">모든 장르</option>
-								<option value="rock">록/메탈</option>
-								<option value="indie">인디</option>
-								<option value="alternative">얼터너티브</option>
-								<option value="post-rock">포스트록</option>
-							</select>
-							<select className="px-4 py-2 border rounded-lg">
-								<option value="name">이름순</option>
-								<option value="debut">데뷔순</option>
-							</select>
-						</div>
-						<div className="text-gray-500">총 {artists.length}개의 아티스트</div>
-					</div>
-
-					{/* 아티스트 그리드 */}
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-						{artists.map((artist) => (
-							<Link key={artist.id} href={`/artist/${artist.id}`} className="group">
-								<article className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
-									<div className="relative h-48">
-										<Image
-											src={`https://imagedelivery.net/CJyrB-EkqcsF2D6ApJzEBg/${artist.imageUrl}/public`}
-											alt={artist.name}
-											fill
-											className="object-cover group-hover:scale-105 transition-transform duration-300"
-										/>
-									</div>
-
-									<div className="p-4">
-										<h2 className="font-bold text-lg mb-1">{artist.name}</h2>
-										<div className="flex items-center gap-2 text-sm text-gray-500 mb-2">
-											<span>{artist.genre.name}</span>
-											<span>•</span>
-											<span>{artist.country}</span>
-										</div>
-										<p className="text-sm text-gray-600 line-clamp-2">{artist.description}</p>
-										{artist.songs[0] && <div className="mt-3 text-sm text-accent">대표곡: {artist.songs[0].title}</div>}
-									</div>
-								</article>
-							</Link>
-						))}
-					</div>
+					<ArtistList initialArtists={artists} currentSort={sortBy} />
 				</div>
 			</section>
 		</main>
