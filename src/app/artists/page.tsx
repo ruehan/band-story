@@ -33,8 +33,11 @@ async function getArtists(sortBy: string = "name") {
 	return artists;
 }
 
-export default async function ArtistsPage({ searchParams }: { searchParams: { sort: string } }) {
-	const sortBy = searchParams.sort || "name";
+type Params = Promise<{ sort: string }>;
+
+export default async function ArtistsPage({ searchParams }: { searchParams: Params }) {
+	const { sort } = await searchParams;
+	const sortBy = sort || "name";
 	const artists = await getArtists(sortBy);
 
 	return (

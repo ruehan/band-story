@@ -29,8 +29,11 @@ async function getGenres(sortBy: string = "name") {
 	return genres;
 }
 
-export default async function GenresPage({ searchParams }: { searchParams: { sort: string } }) {
-	const sortBy = searchParams.sort || "name";
+type Params = Promise<{ sort: string }>;
+
+export default async function GenresPage({ searchParams }: { searchParams: Params }) {
+	const { sort } = await searchParams;
+	const sortBy = sort || "name";
 	const genres = await getGenres(sortBy);
 
 	return (
