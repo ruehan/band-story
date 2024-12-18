@@ -2,6 +2,13 @@ import { prisma } from "../../lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
 import ArtistList from "./ArtistList";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "아티스트",
+	description: "다양한 밴드와 뮤지션들을 만나보세요. 각 밴드의 프로필과 음악을 확인할 수 있습니다.",
+	keywords: ["밴드", "뮤지션", "아티스트", "인디밴드", "록밴드"],
+};
 
 // searchParams를 통해 정렬 기준을 받아옴
 async function getArtists(sortBy: string = "name") {

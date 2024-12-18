@@ -5,6 +5,7 @@ import { prisma } from "../../../lib/prisma";
 import PlayButton from "@/components/PlayButton";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import ArtistSongList from "@/components/home/ArtistSongList";
+import type { Metadata } from "next";
 
 async function getArtist(id: string) {
 	const artist = await prisma.artist.findUnique({
@@ -107,4 +108,19 @@ export default async function ArtistPage({ params }: { params: Params }) {
 			</section>
 		</main>
 	);
+}
+
+export async function generateMetadata({ params }): Promise<Metadata> {
+	const artist = await getArtist(params.id);
+
+	return {
+		title: artist.name,
+		description: artist.description || `${artist.name}의 프로필과 음악을 확인해보세요.`,
+		keywords: [artist.name, artist.genre.name, "밴드", "음악"],
+		openGraph: {
+			title: artist.name,
+			description: artist.description,
+			images: [`https://imagedelivery.net/CJyrB-EkqcsF2D6ApJzEBg/${artist.imageUrl}/public`],
+		},
+	};
 }

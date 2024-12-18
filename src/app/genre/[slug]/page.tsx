@@ -107,7 +107,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 	const genre = await getGenreData(slug);
 
 	return {
-		title: `${genre.name} 아티스트 - Band Story`,
-		description: `${genre.name} 장르의 아티스트들을 만나보세요.`,
+		title: `${genre.name} 밴드`,
+		description: `${genre.name} 장르의 다양한 밴드들을 만나보세요.`,
+		keywords: [genre.name, "밴드", "음악", "장르"],
+		openGraph: {
+			title: `${genre.name} - Band Story`,
+			description: `${genre.name} 장르의 다양한 밴드들을 만나보세요.`,
+		},
 	};
 }

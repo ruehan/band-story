@@ -84,6 +84,6 @@ export default function AboutPage() {
 }
 
 export const metadata = {
-	title: "소개 - Band Story",
+	title: "소개",
 	description: "Band Story 프로젝트 소개 및 주요 기능 안내",
 };

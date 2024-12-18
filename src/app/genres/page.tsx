@@ -1,6 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import Link from "next/link";
 import GenreList from "./GenreList";
+import type { Metadata } from "next";
 
 async function getGenres(sortBy: string = "name") {
 	const genres = await prisma.genre.findMany({
@@ -50,7 +51,8 @@ export default async function GenresPage({ searchParams }: { searchParams: { sor
 	);
 }
 
-// export const metadata = {
-// 	title: "장르 - Band Story",
-// 	description: "다양한 장르의 음악을 탐색해보세요.",
-// };
+export const metadata: Metadata = {
+	title: "장르",
+	description: "다양한 장르의 밴드 음악을 탐색해보세요. 록, 메탈, 인디 등 각 장르별 대표 밴드와 음악을 확인할 수 있습니다.",
+	keywords: ["밴드 장르", "록", "메탈", "인디", "얼터너티브"],
+};
