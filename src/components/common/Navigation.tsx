@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HomeIcon, InformationCircleIcon, MusicalNoteIcon, UserGroupIcon } from "@heroicons/react/24/outline";
+import { SpeakerWaveIcon, InformationCircleIcon, MusicalNoteIcon, UserGroupIcon } from "@heroicons/react/24/outline";
 
 export default function Navigation() {
 	return (
@@ -9,7 +9,7 @@ export default function Navigation() {
 					{/* 로고 & 메인 메뉴 */}
 					<div className="flex items-center space-x-8">
 						<Link href="/" className="text-xl font-bold text-primary flex items-center">
-							<HomeIcon className="h-6 w-6 mr-2" />
+							<SpeakerWaveIcon className="h-6 w-6 mr-2" />
 							Band Story
 						</Link>
 
