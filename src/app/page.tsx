@@ -17,7 +17,7 @@ async function getHomePageData() {
 			genre: true,
 			songs: true,
 		},
-		take: 3, // 최대 3개만 가져오기
+		take: 4,
 	});
 
 	return { genres, artists };

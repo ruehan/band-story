@@ -35,7 +35,7 @@ export default function ArtistSpotlight({ artists }: Props) {
 					</Link>
 				</div>
 
-				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+				<div className="grid grid-cols-1 lg:grid-cols-4 md:grid-cols-2 gap-8">
 					{artists.map((artist) => (
 						<article key={artist.id} className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
 							<div className="relative h-48">
